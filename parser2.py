@@ -18,14 +18,26 @@ class Report ():
         self.objcount=0
         self.doopen()
 
+    def doopen(self):
+        if (self.count > 0):
+            self.doclose()
+        self.count = self.count +1
+        self.file_name = "data/simpledata_%d.py" % self.count
+        if not os.path.exists(self.file_name):  #skio
+            print("open %s" % self.file_name)
+            self.fo = open(self.file_name ,"w")
+            self.fo.write("def load() :\n\treturn [\n")
+            self.skip=False
+        else:
+            print("skip %s" % self.file_name)
+            self.skip=True
+
     def add(self,obj):
         self.objcount = self.objcount +1 
-
         if not self.skip:
             formatted=pp.pformat(obj)
             formatted=formatted.replace("\n"," ") # put them on one line
             self.fo.write(formatted + ",\n")        
-
         if self.objcount > BLOCKSIZE:
             self.objcount=0
             self.doopen()
@@ -33,26 +45,9 @@ class Report ():
     def doclose(self):
         if not self.skip:
             print("close %s" % self.file_name)
-            self.fo.write("]\n")
+            self.fo.write("\n]\n")
             self.fo.flush()    
             self.fo.close()    
-
-
-    def doopen(self):
-        if (self.count > 0):
-            self.doclose()
-
-        self.count = self.count +1
-        self.file_name = "data/simpledata_%d.py" % self.count
-
-        if not os.path.exists(self.file_name):  #skio
-            print("open %s" % self.file_name)
-            self.fo = open(self.file_name ,"w")
-            self.fo.write("def load() :\n\treturn [")
-            self.skip=False
-        else:
-            print("skip %s" % self.file_name)
-            self.skip=True
 
     def report(self):
         self.doclose()
