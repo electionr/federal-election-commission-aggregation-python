@@ -45,14 +45,10 @@ def process(count):
         count = count + 1
     print (fname, count)
 
+    # now lets clean up memory
     del x
     del sys.modules[module_name]
     del sys.modules["data"]
-    #exec("del %s" % code_load)
-    #print ("modules %s" % sorted(sys.modules.keys()))
-    #print (dir () )
-    #print (globals ())
-    #print (locals () )
     gc.collect()
 
 for x in range(1,100):

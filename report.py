@@ -18,12 +18,18 @@ class Report ():
             self.data[x][v]=self.data[x][v]+1
         #pass
 
-    def add(self,obj):
+    def add1(self,obj):
         for x in obj.keys():
             v = obj[x]
             if x not in  self.data:
                 self.data[x]=0
             self.data[x]=self.data[x]+1
 
+    def add(self,obj):
+        self.add2(obj)
+
     def report(self):
-        print(pp.pformat(self.data))
+        f=open ("tmp_report1.py","w")
+        f.write(pp.pformat(self.data))
+        f.flush()
+        f.close()
