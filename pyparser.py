@@ -9,7 +9,11 @@ class Parser():
 
     re_beginfile     = re.compile(r'\s+return \[\{\s+(.+)')
     re_record        = re.compile(r'([^}]+)\},\{([^{]+)')  # split the old and new record
-    re_namevalue     = re.compile(r'\s*\'(.+)\':\s(:?\"|\')(.+)(:?\"|\'),?')
+    re_namevalue1     = re.compile(r'\s*"([^"]+)":\s"([^"]+)",?')
+    re_namevalue2    = re.compile(r'\s*\'([^\']+)\':\s\'([^\']+)\',?')
+    re_namevalue3    = re.compile(r'\s*\'([^\']+)\':\s"([^"]+)",?')
+    re_namevalue4    = re.compile(r'\s*\'([^\']+)\':\s\s"\'([^"]+)\'",?')
+    re_namevalue5    = re.compile(r'\s*\'([^\']+)\':\s\s"([^"]+)",?')
 
     def __init__(self, report):
         self.state = Parser.STATE_START
@@ -53,15 +57,27 @@ class Parser():
             return False
 
     def match_keyvalue(self, line):
-        match = self.re_namevalue.match(line)
-        if match is not None :
-            name = match.group(1)
-            value = match.group(1)
-            self.set_fieldvalue(name,value)
-            return True
-        else:
-            raise Exception(line)
-            return False
+
+        match1 = self.re_namevalue1.match(line)
+        match2 = self.re_namevalue2.match(line)
+        match3 = self.re_namevalue3.match(line)
+        match4 = self.re_namevalue4.match(line)
+        match5 = self.re_namevalue5.match(line)
+
+        for match in (match1,match2,match3,match4,match5):
+            if match is not None :
+                name = match.group(1)
+                value = match.group(2)
+                value = value.strip("\'")
+                value = value.rstrip("\'")
+                #print name, value
+                if value.find("\'")==0:
+                    raise Exception(value)
+                self.set_fieldvalue(name,value)
+                return True
+
+        raise Exception(line)
+        return False
 
 
     def parse_line(self):
