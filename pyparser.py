@@ -9,11 +9,12 @@ class Parser():
 
     re_beginfile     = re.compile(r'\s+return \[\{\s+(.+)')
     re_record        = re.compile(r'([^}]+)\},\{([^{]+)')  # split the old and new record
-    re_namevalue1     = re.compile(r'\s*"([^"]+)":\s"([^"]+)",?')
-    re_namevalue2    = re.compile(r'\s*\'([^\']+)\':\s\'([^\']+)\',?')
+    re_namevalue1     = re.compile(r'\s*"([^"]+)":\s*"([^"]+)",?')
+    re_namevalue2    = re.compile(r'\s*\'([^\']+)\':\s*\'([^\']+)\',?')
     re_namevalue3    = re.compile(r'\s*\'([^\']+)\':\s"([^"]+)",?')
-    re_namevalue4    = re.compile(r'\s*\'([^\']+)\':\s\s"\'([^"]+)\'",?')
-    re_namevalue5    = re.compile(r'\s*\'([^\']+)\':\s\s"([^"]+)",?')
+    re_namevalue4    = re.compile(r'\s*\'([^\']+)\':\s*"\'([^\']+)\'",?')
+    re_namevalue5    = re.compile(r'\s*\"([^\"]+)\":\s*\'([^\']+)\',?')
+    re_namevalue6    = re.compile(r'\s*\'([^\']+)\':\s*"([^"]+)",?')
 
     def __init__(self, report):
         self.state = Parser.STATE_START
@@ -63,8 +64,9 @@ class Parser():
         match3 = self.re_namevalue3.match(line)
         match4 = self.re_namevalue4.match(line)
         match5 = self.re_namevalue5.match(line)
+        match6 = self.re_namevalue6.match(line)
 
-        for match in (match1,match2,match3,match4,match5):
+        for match in (match1,match2,match3,match4,match5,match6):
             if match is not None :
                 name = match.group(1)
                 value = match.group(2)

@@ -22,7 +22,9 @@ class Report ():
         self.objcount = self.objcount +1 
 
         if not self.skip:
-            self.fo.write(pp.pformat(obj) + ",\n")        
+            formatted=pp.pformat(obj)
+            formatted=formatted.replace("\n"," ") # put them on one line
+            self.fo.write(formatted + ",\n")        
 
         if self.objcount > BLOCKSIZE:
             self.objcount=0
@@ -53,11 +55,16 @@ class Report ():
             self.skip=True
 
     def report(self):
-        self.close()
+        self.doclose()
 
 
 r = Report()
 p=Parser(r)
+
+#simple test
+#x = u""" "FILER'S FEC ID NUMBER": 'C90011628', """
+#print p.match_keyvalue(x)
+
 filename= sys.argv[1]
 print filename
 p.parse_file(filename)
