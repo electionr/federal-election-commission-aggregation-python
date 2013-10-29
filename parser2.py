@@ -8,7 +8,8 @@ import sys
 pp = pprint.PrettyPrinter(indent=4)
 
 #BLOCKSIZE=100000 #5gb
-BLOCKSIZE=50000 
+#BLOCKSIZE=50000 80mb
+BLOCKSIZE=7000
 #BLOCKSIZE=500 
 
 class Report ():
@@ -22,7 +23,7 @@ class Report ():
         if (self.count > 0):
             self.doclose()
         self.count = self.count +1
-        self.file_name = "data/simpledata_%d.py" % self.count
+        self.file_name = "data_small/simpledata_%d.py" % self.count
         if not os.path.exists(self.file_name):  #skio
             print("open %s" % self.file_name)
             self.fo = open(self.file_name ,"w")
