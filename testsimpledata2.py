@@ -51,9 +51,10 @@ def process(count):
     del sys.modules["data"]
     gc.collect()
 
-for x in range(1,100):
+for x in range(1,259):
     try :
         process(x)
+        r.report()
     except SyntaxError as e :
         print (e)
 
