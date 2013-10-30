@@ -1,7 +1,7 @@
 """
-the best report so far, needs lots of memory to run.
+new simple report,
+emit data objects in json in the file system for the website to use
 """
-
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
 import re
@@ -369,9 +369,10 @@ class Report ():
                 self.data_b[b][v]=self.data_b[b][v]+1
 
     def add(self,obj):
-        pp.pprint(obj)
-      #  self.add2(obj)
-      #  self.add1(obj)
+        #pp.pprint(obj)
+        #  self.add2(obj)
+        #  self.add1(obj)
+        #print obj
         self.add_bundle(obj)
 
     def report_file(self,fname,name,data):

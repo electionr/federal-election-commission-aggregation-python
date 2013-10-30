@@ -1,3 +1,6 @@
+"""
+Simple driver to read one yaml file and emit one python file
+"""
 import yaml
 import sys
 filename = sys.argv[1]

@@ -1,3 +1,9 @@
+"""
+driver
+loads the python with compile, uses more memory and loads the entire file,
+for low memory machines, need to eval smaller chunks of the file.
+"""
+
 import resource
 import os.path 
 from report import Report
