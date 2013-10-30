@@ -31,6 +31,11 @@ def process(count):
     code_load = module_name + ".load"
     call_code_load = code_load  + "()"
 
+
+    if os.path.exists( fname +  "c"):
+        print ("compiled already %s" % fname)
+        return
+    
     if not os.path.exists( fname):
         print ("missing %s" % fname)
         return

@@ -365,8 +365,8 @@ class Report ():
                 self.data_b[b][v]=self.data_b[b][v]+1
 
     def add(self,obj):
-        self.add2(obj)
-        self.add1(obj)
+      #  self.add2(obj)
+      #  self.add1(obj)
         self.add_bundle(obj)
 
     def report_file(self,fname,name,data):
