@@ -366,30 +366,34 @@ class Report ():
                 if x in obj:
                     v = obj[x]
                     if len(v )> 0:
-                        count = count + 1                        
-                else:
-                    v= "_"
-                    
-                x=re.sub(r'[^\w]', "_", x)
-                v2.append(x)
-                v= re.sub(r'[^\w]', "_", v)
-                v2.append(v)
+                        count = count + 1
+                        x=re.sub(r'[^\w]', "_", x)
+                        v2.append(x)
+                        v= re.sub(r'[^\w]', "_", v)
+                        v2.append(v)
 
             if (count == 0):
                 continue
+
+            yaml = "UNKOWN"
+            if "_src_file" in obj:
+                yaml  = obj["_src_file"]
+                yaml = yaml.replace(".yml", "")
+                v2.append(yaml)
+
+            trans = "_UNKNOWN_"
+            if ("TRANSACTION ID" in obj):
+                trans = obj["TRANSACTION ID"]             
             
             v="/".join(v2)
-            pathname  = "json/" + v 
-            fname     = pathname + "/data.json"
+            pathname  = "jsonp/" + v
+            
+            fname     = pathname + "/" + trans + ".js"
+            
             du.mkpath(pathname)
             
-            if (not os.path.exists(fname) ):
-                of = open (fname, "a")
-                of.write( "mycallback([ " + json.dumps(obj) + ",\n")
-            else:
-                of = open (fname, "a")
-                of.write( json.dumps(obj) + ",\n")
-                
+            of = open (fname, "a")
+            of.write( "mycallback( " + json.dumps(obj) + ");\n")
             of.flush()
             of.close()
             # note the string is not terminated.. thus not valid json
