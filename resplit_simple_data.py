@@ -27,7 +27,19 @@ def process(count):
     
     gc.collect()
 
-for x in range(1,2000):
+start = 1
+try :
+    start = int(sys.argv[1])
+except:
+    pass
+
+stop = 3000
+try :
+    stop = int(sys.argv[2])
+except:
+    pass
+
+for x in range(start,stop):
     try :
         process(x)
         r.report()
