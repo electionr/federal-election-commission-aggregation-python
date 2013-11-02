@@ -1,9 +1,3 @@
-"""
-driver
-loads the python with compile, uses more memory and loads the entire file,
-for low memory machines, need to eval smaller chunks of the file.
-"""
-
 import resource
 import os.path 
 from report import Report
@@ -37,6 +31,11 @@ def process(count):
     code_load = module_name + ".load"
     call_code_load = code_load  + "()"
 
+
+    if os.path.exists( fname +  "c"):
+        print ("compiled already %s" % fname)
+        return
+    
     if not os.path.exists( fname):
         print ("missing %s" % fname)
         return
@@ -57,7 +56,7 @@ def process(count):
     del sys.modules["data"]
     gc.collect()
 
-for x in range(1,1259):
+for x in range(1,259):
     try :
         process(x)
         r.report()

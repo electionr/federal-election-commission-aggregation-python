@@ -1,3 +1,9 @@
+"""
+Simple alternative YAML parser module,
+it reads the yaml produced by the new fech module and simplfies it, removing the column number
+it does not process failed attempts at coverting, they will need to be repaired first.
+Resulting object will be a simple python object for later processing
+"""
 import re
 import os
 import fnmatch

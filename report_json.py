@@ -1,10 +1,13 @@
 """
-the best report so far, needs lots of memory to run.
+new simple report,
+emit data objects in json in the file system for the website to use
 """
-
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
 import re
+import json
+import os
+import distutils.dir_util as du
 
 bundle = {
     '_DONOR' :[
@@ -354,24 +357,54 @@ class Report ():
     def add_bundle(self,obj):
         for b in bundle.keys():
             v2=[]
+            v2.append(b)
+
+            count = 0
+            
             for x in bundle[b]:
+
                 if x in obj:
                     v = obj[x]
-                else:
-                    v= ""
-                v2.append(v)
-            v="|".join(v2)
-            if b not in self.data_b:
-                self.data_b[b]={}
-            if v not in self.data_b[b]:
-                self.data_b[b][v]=1
-            else:
-                self.data_b[b][v]=self.data_b[b][v]+1
+                    if len(v )> 0:
+                        count = count + 1
+                        x=re.sub(r'[^\w]', "_", x)
+                        v2.append(x)
+                        v= re.sub(r'[^\w]', "_", v)
+                        v2.append(v)
+
+            if (count == 0):
+                continue
+
+            yaml = "UNKOWN"
+            if "_src_file" in obj:
+                yaml  = obj["_src_file"]
+                yaml = yaml.replace(".yml", "")
+                v2.append(yaml)
+
+            trans = "_UNKNOWN_"
+            if ("TRANSACTION ID" in obj):
+                trans = obj["TRANSACTION ID"]             
+            
+            v="/".join(v2)
+            pathname  = "jsonp/" + v
+            
+            fname     = pathname + "/" + trans + ".js"
+            
+            du.mkpath(pathname)
+            
+            of = open (fname, "a")
+            of.write( "mycallback( " + json.dumps(obj) + ");\n")
+            of.flush()
+            of.close()
+            # note the string is not terminated.. thus not valid json
+            
+            
 
     def add(self,obj):
-        pp.pprint(obj)
-      #  self.add2(obj)
-      #  self.add1(obj)
+        #pp.pprint(obj)
+        #  self.add2(obj)
+        #  self.add1(obj)
+        #print obj
         self.add_bundle(obj)
 
     def report_file(self,fname,name,data):

@@ -1,3 +1,7 @@
+"""
+Driver using parser and producing a simple report.
+parses yaml files and reports on them.
+"""
 import re
 import fnmatch
 import os

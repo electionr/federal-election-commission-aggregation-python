@@ -1,3 +1,7 @@
+"""
+Splits the first pass huge python file into smalller files for easier processing
+"""
+
 import re
 import fnmatch
 import os

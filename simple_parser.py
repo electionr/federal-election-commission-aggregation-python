@@ -1,3 +1,9 @@
+"""
+produces one huge python file from the yaml files,
+it is the base of all the following process.
+note the pretty printed output.
+"""
+
 import re
 import fnmatch
 import os
