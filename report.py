@@ -346,7 +346,7 @@ class Report ():
 
     def add1(self,obj):
         for x in obj.keys():
-            v = obj[x]
+            #v = obj[x]
             if x not in self.data_id:
                 self.data_id[x]=0
             self.data_id[x]=self.data_id[x]+1

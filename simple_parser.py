@@ -4,9 +4,9 @@ it is the base of all the following process.
 note the pretty printed output.
 """
 
-import re
-import fnmatch
-import os
+#import re
+#import fnmatch
+#import os
 import pprint
 from parser import Parser
 import sys

@@ -3,9 +3,9 @@ simple python parser
 just extracts the objects on a line and evals them!
 keep the format simple
 """
-import re
-import os
-import fnmatch
+#import re
+#import os
+#import fnmatch
 class Parser():
 
     def __init__(self, report):

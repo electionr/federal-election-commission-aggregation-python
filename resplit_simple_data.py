@@ -2,7 +2,7 @@
 uses the simple line by line eval parser and json report,
 for running on low memory machines
 """
-import resource
+#import resource
 import os.path
 from simpleparser import Parser
 from report_json import Report

@@ -2,9 +2,9 @@
 Driver using parser and producing a simple report.
 parses yaml files and reports on them.
 """
-import re
-import fnmatch
-import os
+#import re
+#import fnmatch
+#import os
 import pprint
 from parser import Parser
 import sys
@@ -27,7 +27,7 @@ class Report ():
 
     def add(self,obj):
         for x in obj.keys():
-            v = obj[x]
+            #v = obj[x]
             if x not in  self.data:
                 self.data[x]=0
             self.data[x]=self.data[x]+1

@@ -8,9 +8,11 @@ import re
 import json
 import os
 import distutils.dir_util as du
+import hashlib
+m = hashlib.sha1()
 
 bundle = {
-    '_DONOR' :[
+    'DONOR' :[
         'DONOR CANDIDATE STATE',
         'DONOR CANDIDATE DISTRICT',
         'DONOR CANDIDATE OFFICE',
@@ -23,6 +25,24 @@ bundle = {
         'DONOR CANDIDATE LAST NAME',     
         'DONOR CANDIDATE SUFFIX',
     ],
+    
+    "FEC_ID" : [
+        'AFFILIATED CANDIDATE ID NUM',
+        'AFFILIATED COMMITTEE FEC ID',
+        'AFFILIATED Committee ID NUM',
+        'AUTH COMMITTEE ID NUMBER',
+        'BENEFICIARY COMMITTEE FEC ID',
+        'CANDIDATE ID NUMBER',
+        'CONTRIBUTOR COMMITTEE FEC ID',
+        'DONOR CANDIDATE FEC ID',
+        'DONOR COMMITTEE FEC ID',
+        'LENDER COMMITTEE ID NUMBER',
+        'PAYEE CANDIDATE ID NUMBER',
+        'PAYEE COMMITTEE ID NUMBER',
+        'PAYEE Committee FEC ID NUMBER',
+        'PCC COMMITTEE ID NUMBER',
+        'S/O CANDIDATE ID NUMBER',
+        ],
 
     'GUARANTOR': [
         'GUARANTOR STATE',
@@ -130,7 +150,7 @@ bundle = {
         'CONDUIT NAME',
     ],
 
-    "_CUSTODIAN" : [
+    "CUSTODIAN" : [
         'CUSTODIAN STATE',
         'CUSTODIAN ZIP',
         'CUSTODIAN CITY',
@@ -145,7 +165,7 @@ bundle = {
         'CUSTODIAN TELEPHONE',
     ] ,
 
-    '_SOCANDIDATEDISTRICT':  [ 
+    'SOCANDIDATEDISTRICT':  [ 
         'S/O CANDIDATE STATE',
         'S/O CANDIDATE DISTRICT',
         'S/O CANDIDATE OFFICE',
@@ -157,12 +177,12 @@ bundle = {
         'S/O CANDIDATE SUFFIX',
     ],
 
-    '__record_type' :
+    '_record_type' :
     [ 
         '_record_type',
     ],
 
-    '_OTHER' :
+    'OTHER' :
     [ 
         'ZIP',
         'STATE',
@@ -171,14 +191,14 @@ bundle = {
         'STREET 2',
     ],
 
-    '_ELECTION' : [
+    'ELECTION' : [
         'ELECTION CODE',
         'ELECTION DISTRICT',
         'ELECTION OTHER DESCRIPTION',
         'ELECTION STATE',
     ],
 
-    "_LENDER": [
+    "LENDER": [
         'LENDER STATE',
         'LENDER CANDIDATE STATE',
         'LENDER CANDIDATE DISTRICT',
@@ -202,7 +222,7 @@ bundle = {
         'LENDER SUFFIX',
     ],
 
-    '_CREDITOR' : [
+    'CREDITOR' : [
         'CREDITOR STATE',
         'CREDITOR ZIP',
         'CREDITOR CITY',
@@ -216,7 +236,7 @@ bundle = {
         'CREDITOR SUFFIX',
     ],
 
-    '_CONTRIBUTOR':
+    'CONTRIBUTOR':
     [ 
         'CONTRIBUTOR STATE',
         'CONTRIBUTOR ZIP',
@@ -236,7 +256,7 @@ bundle = {
         'CONTRIBUTOR ORGANIZATION NAME',
     ],
 
-    '_BENEFICIARY_CANDIDATE':
+    'BENEFICIARY CANDIDATE':
     [ 
         'BENEFICIARY CANDIDATE STATE',
         'BENEFICIARY CANDIDATE DISTRICT',
@@ -251,7 +271,7 @@ bundle = {
         'BENEFICIARY CANDIDATE SUFFIX',
     ],
     
-    '_CANDIDATE': [
+    'CANDIDATE': [
         'CANDIDATE STATE',
         'CANDIDATE DIST',
         'CANDIDATE DISTRICT',
@@ -277,7 +297,7 @@ bundle = {
         'CANDIDATE SIGNATURE SUFFIX',
         ],
 
-    '_AUTH' :    [
+    'AUTH' :    [
         'AUTH STATE',
         'AUTH ZIP',
         'AUTH STREET 1',
@@ -287,7 +307,7 @@ bundle = {
         'AUTH COMMITTEE NAME',
     ],
 
-    '_AGENT': [
+    'AGENT': [
         'AGENT STATE',
         'AGENT ZIP',
         'AGENT CITY',
@@ -302,7 +322,7 @@ bundle = {
         'AGENT TELEPHONE',
     ],      
 
-    '_PAYEE': [
+    'PAYEE': [
         'PAYEE STATE',
         'PAYEE CANDIDATE STATE',
         'PAYEE CANDIDATE DISTRICT',
@@ -335,38 +355,39 @@ class Report ():
         self.data_b={}
         self.data_id={}
 
-    def add2(self,obj):
-        for x in obj.keys():
-            v = obj[x]
-            if x not in  self.data:
-                self.data[x]={}
+    def emit_data(self,obj):
+        contents = "mycallback( " + json.dumps(obj) + ");\n"
+        m.update(contents)
+        sha1= m.hexdigest()
+        pathname= "jsonp/objects/" + sha1[0:2] + "/"
+        du.mkpath(pathname)
+        fname = pathname + sha1[2:] + ".js"
 
-            if v not in  self.data[x]:
-                self.data[x][v]=0
-
-            self.data[x][v]=self.data[x][v]+1
-        #pass
-
-    def add1(self,obj):
-        for x in obj.keys():
-            v = obj[x]
-            if x not in self.data_id:
-                self.data_id[x]=0
-            self.data_id[x]=self.data_id[x]+1
+        of = open (fname, "a")
+        of.write( contents)
+        of.flush()
+        of.close()
+        return (fname,sha1)
 
     def add_bundle(self,obj):
+
+        (data_file,sha1) = self.emit_data(obj)
+
         for b in bundle.keys():
-            v2=[]
+            v2=["jsonp","index"]
+
             v2.append(b)
 
             count = 0
             
             for x in bundle[b]:
-
+                
                 if x in obj:
                     v = obj[x]
+
                     if len(v )> 0:
                         count = count + 1
+                        x = x.replace(b + " ","") # remove the prefix
                         x=re.sub(r'[^\w]', "_", x)
                         v2.append(x)
                         v= re.sub(r'[^\w]', "_", v)
@@ -380,22 +401,21 @@ class Report ():
                 yaml  = obj["_src_file"]
                 yaml = yaml.replace(".yml", "")
                 v2.append(yaml)
-
-            trans = "_UNKNOWN_"
-            if ("TRANSACTION ID" in obj):
-                trans = obj["TRANSACTION ID"]             
-            
+                
             v="/".join(v2)
-            pathname  = "jsonp/" + v
-            
-            fname     = pathname + "/" + trans + ".js"
-            
+            pathname  =  v
+            fname     = pathname + "/" +  sha1 + ".js"
             du.mkpath(pathname)
+
+            rel = os.path.relpath(data_file,pathname)
             
-            of = open (fname, "a")
-            of.write( "mycallback( " + json.dumps(obj) + ");\n")
-            of.flush()
-            of.close()
+            if (not os.path.exists(rel)):
+                os.symlink(rel, fname)
+
+            #of = open (fname, "a")
+            #of.write( "mycallback( " + json.dumps(obj) + ");\n")
+            #of.flush()
+            #of.close()
             # note the string is not terminated.. thus not valid json
             
             
@@ -407,25 +427,7 @@ class Report ():
         #print obj
         self.add_bundle(obj)
 
-    def report_file(self,fname,name,data):
-        f=open (fname,"w")
-        f.write("def load() :\n\t return {'name':u'''%s''', 'data'=" % name)
-        f.write(pp.pformat(data))
-        f.flush()
-        f.close()
-
     def report(self):
-        self.report_file("simple.py","simple",self.data_id)
-
-        for x in self.data_b.keys():
-            fname="report_b/%s.py" % x
-            self.report_file(fname,x,self.data_b[x])
-
-        for x in self.data.keys():
-            n=x 
-            n = re.sub(r'\W', "_", n)
-            fname="report/tmp_%s.py" % n
-            self.report_file(fname,x,self.data[x])
-
+        pass
 
 

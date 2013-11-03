@@ -4,8 +4,8 @@ Simple python parser, used to split up the python objects into smaller objects
 """
 
 import re
-import os
-import fnmatch
+#import os
+#import fnmatch
 
 class Parser():
 
