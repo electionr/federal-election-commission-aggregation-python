@@ -363,10 +363,12 @@ class Report ():
         du.mkpath(pathname)
         fname = pathname + sha1[2:] + ".js"
 
-        of = open (fname, "a")
-        of.write( contents)
-        of.flush()
-        of.close()
+        if (not os.path.exists(fname)):
+            of = open (fname, "a")
+            of.write( contents)
+            of.flush()
+            of.close()
+
         return (fname,sha1)
 
     def add_bundle(self,obj):
@@ -411,20 +413,9 @@ class Report ():
             
             if (not os.path.islink(fname)):
                 os.symlink(rel, fname)
-
-            #of = open (fname, "a")
-            #of.write( "mycallback( " + json.dumps(obj) + ");\n")
-            #of.flush()
-            #of.close()
-            # note the string is not terminated.. thus not valid json
-            
-            
+                      
 
     def add(self,obj):
-        #pp.pprint(obj)
-        #  self.add2(obj)
-        #  self.add1(obj)
-        #print obj
         self.add_bundle(obj)
 
     def report(self):
