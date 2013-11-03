@@ -409,7 +409,7 @@ class Report ():
 
             rel = os.path.relpath(data_file,pathname)
             
-            if (not os.path.exists(rel)):
+            if (not os.path.islink(fname)):
                 os.symlink(rel, fname)
 
             #of = open (fname, "a")
