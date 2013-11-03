@@ -1,0 +1,8 @@
+losetup -d /dev/loop0
+losetup /dev/loop0 /virtualfs
+mkdir /mnt/vfs
+umount /mnt/vfs
+dd if=/dev/zero of=/virtualfs bs=1024 count=1930720
+mkfs.reiserfs -q -b 4096  /dev/loop0
+mount -t reiserfs /dev/loop0 /mnt/vfs
+chmod 777 /mnt/vfs/
