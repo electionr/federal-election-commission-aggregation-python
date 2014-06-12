@@ -19,6 +19,17 @@ class Report ():
         self.fo.write("def load() :\n\treturn [")
 
     def add(self,obj):
+        # remove the empty fields
+        rm =[]
+        for x in obj:
+            if x in obj:
+                if obj[x] == "''":
+                    rm.append(x)
+                elif obj[x] == "":
+                    rm.append(x)
+        for x in rm :
+            del obj[x]
+
         self.fo.write(pp.pformat(obj) + ",")
 
     def report(self):

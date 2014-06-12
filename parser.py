@@ -16,7 +16,7 @@ class Parser():
     re_filename = re.compile(r'filename: (.+)')
     re_record   = re.compile(r'  record: (.+)')
     re_name     = re.compile(r'  -\sname: (.+)')
-    re_value    = re.compile(r'    value: (.+)')
+    re_value    = re.compile(r'    value: \'(.+)\'')
 
     def __init__(self, report):
 
@@ -34,6 +34,18 @@ class Parser():
     def new_record (self):
         if (len(self.record.keys())>0):
             #print str(self.record)
+
+            # remove the empty fields
+            rm =[]
+            for x in self.record:
+                if x in self.record:
+                    if self.record[x] == "''":
+                        rm.append(x)
+                    elif self.record[x] == "":
+                        rm.append(x)
+            for x in rm :
+                del self.record[x]
+
             self.report.add(self.record)
         self.record={
             '_src_file' : self.src_file
@@ -131,10 +143,12 @@ class Parser():
         print filename
         ins = open( filename, "r" )
         self.src_file=filename
+        self.report.begin_file(filename)
         for line in ins:
             self.line=line.strip("\n")
             #print "BEFORE:'%s':'%s'" % ( self.state, self.line)
             self.parse_line()
+        self.report.end_file(filename)
         self.new_record()
   
     def parse_dir(self,dirname):
