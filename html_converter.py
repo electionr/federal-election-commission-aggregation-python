@@ -31,7 +31,30 @@ class Report ():
 
     def add(self,obj):
         template = self.env.get_template('fec_record.html')
-        self.fo.write(template.render(obj=obj))
+        obj2={}
+        order={}
+        for x in obj :
+            if isinstance(obj[x], dict):
+                v = obj[x]['v']
+                v = v.strip('\'')
+                v = v.rstrip('\'')
+                if v:
+                    n= int(obj[x]['n']) +1
+                    obj2[x]={ 'v': v,
+                              'n' : n
+                          }
+                    order[n]=x
+            else:
+                if x == '_record_type':
+                    n = 0
+                elif x == '_src_file':
+                    n = 1
+
+                obj2[x]={ 'v': obj[x],
+                          'n' : n } 
+                order[n]=x
+
+        self.fo.write(template.render(order=order, obj=obj2 ))
 
     def report(self):
         self.fo.write("]")

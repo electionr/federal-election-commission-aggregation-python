@@ -1,4 +1,9 @@
-OBJ1 {{  obj }}
-OBJ {% for x in obj %}
- <li>"{{ x }}">{{ obj[x] }}</li>
-  {% endfor %}
+{% if 'FORM TYPE' in obj %}
+<dl class="{{ obj['FORM TYPE']['v'] }}">
+{% for y,x in order.iteritems() %}
+ <dt class="FLD_{{ x }}" field_number={{ y }}>{{ x }}</dt>
+ <dd class="FLD_{{ x }}" field_number={{ y }}>{{ obj[x]['v'] }}</dd>
+{% endfor %}
+</dl>
+{% else %}
+{% endif %}
