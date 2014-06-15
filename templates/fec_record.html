@@ -1,8 +1,8 @@
-{% if 'FORM TYPE' in obj %}
-<dl class="{{ obj['FORM TYPE']['v'] }}">
+{% if 'form_type' in obj %}
+<dl class="{{ obj['form_type']['v'] }}">
 {% for y,x in order.iteritems() %}
- <dt class="FLD_{{ x }}" field_number={{ y }}>{{ x }}</dt>
- <dd class="FLD_{{ x }}" field_number={{ y }}>{{ obj[x]['v'] }}</dd>
+ <dt class="fld_{{ x }}" field_number={{ y }}>{{ x }}</dt>
+ <dd class="fld_{{ x }}" field_number={{ y }}>{{ obj[x]['v'] }}</dd>
 {% endfor %}
 </dl>
 {% else %}

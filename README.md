@@ -8,6 +8,17 @@ Direct Covenrsion
 _________________
 html_converter.py  
 
+call like :
+
+    python ../federal-election-commission-aggregation-python/html_converter.py some/dir/
+
+Create index like this :
+for x in *.html; do echo "<p><a href=\'$x\'>$x</a></p>"; done > index.html
+
+copy the files to :
+2014-pages/data/20140606
+
+
 
 First Pass
 __________

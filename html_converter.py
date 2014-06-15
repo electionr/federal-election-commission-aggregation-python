@@ -4,7 +4,7 @@ it is the base of all the following process.
 note the pretty printed output.
 """
 
-#import re
+import re
 #import fnmatch
 #import os
 import pprint
@@ -34,16 +34,17 @@ class Report ():
         obj2={}
         order={}
         for x in obj :
+            name = re.sub('\W','_', x)
+            name = name.lower()
             if isinstance(obj[x], dict):
                 v = obj[x]['v']
                 v = v.strip('\'')
                 v = v.rstrip('\'')
                 if v:
                     n= int(obj[x]['n']) +1
-                    obj2[x]={ 'v': v,
-                              'n' : n
-                          }
-                    order[n]=x
+                    obj2[name]={ 'v': v,
+                              'n' : n}
+                    order[n]=name
             else:
                 if x == '_record_type':
                     n = 0
@@ -53,7 +54,7 @@ class Report ():
                 obj2[x]={ 'v': obj[x],
                           'n' : n } 
                 order[n]=x
-
+        #print order, obj2
         self.fo.write(template.render(order=order, obj=obj2 ))
 
     def report(self):
